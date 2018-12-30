@@ -1,12 +1,38 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
-import * as serviceWorker from './serviceWorker';
+import React from "react";
+import { render } from "react-dom";
+import { withFormik } from "formik";
+import Yup from "yup";
 
-ReactDOM.render(<App />, document.getElementById('root'));
+const App = ({ values, handleChange, handleSubmit }) => (
+  <form onSubmit={handleSubmit}>
+    <input
+      type="email"
+      name="email"
+      placeholder="Email"
+      value={values.email}
+      onChange={handleChange}
+    />
+    <input
+      type="password"
+      name="password"
+      placeholder="Password"
+      value={values.password}
+      onChange={handleChange}
+    />
+    <button type="submit">Submit</button>
+  </form>
+);
 
-// If you want your app to work offline and load faster, you can change
-// unregister() to register() below. Note this comes with some pitfalls.
-// Learn more about service workers: http://bit.ly/CRA-PWA
-serviceWorker.unregister();
+const FormikApp = withFormik({
+  mapPropsToValues({ email, password }) {
+    return {
+      email: email || "test text",
+      password: password || ""
+    };
+  },
+  handleSubmit(value) {
+    console.log(value);
+  }
+})(App);
+
+render(<FormikApp />, document.getElementById("root"));
