@@ -1,17 +1,17 @@
 import React from "react";
 import { render } from "react-dom";
-import { withFormik, Form, Field } from "formik";
+import { withFormik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import "./index.css";
 
 const App = ({ values, errors, touched, isSubmitting }) => (
   <Form>
     <div>
-      {touched.email && errors.email && <p>{errors.email}</p>}
+      <ErrorMessage name="email" />
       <Field type="email" name="email" placeholder="Email" />
     </div>
     <div>
-      {touched.password && errors.password && <p>{errors.password}</p>}
+      <ErrorMessage name="password" />
       <Field type="password" name="password" placeholder="Password" />
     </div>
     <label>Join our newsletter</label>
