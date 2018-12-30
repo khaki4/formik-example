@@ -1,20 +1,28 @@
 import React from "react";
 import { render } from "react-dom";
 import { withFormik, Form, Field } from "formik";
-import Yup from "yup";
-import './index.css'
+import * as Yup from "yup";
+import "./index.css";
 
-const App = ({ values, handleChange }) => (
+const App = ({ values, errors, touched, isSubmitting }) => (
   <Form>
-    <Field type="email" name="email" placeholder="Email" />
-    <Field type="password" name="password" placeholder="Password" />
+    <div>
+      {touched.email && errors.email && <p>{errors.email}</p>}
+      <Field type="email" name="email" placeholder="Email" />
+    </div>
+    <div>
+      {touched.password && errors.password && <p>{errors.password}</p>}
+      <Field type="password" name="password" placeholder="Password" />
+    </div>
     <label>Join our newsletter</label>
     <Field type="checkbox" name="newsletter" checked={values.newsletter} />
     <Field component="select" name="plan">
       <option value="free">free</option>
       <option value="premium">premium</option>
     </Field>
-    <button type="submit">Submit</button>
+    <button type="submit" disabled={isSubmitting}>
+      Submit
+    </button>
   </Form>
 );
 
@@ -24,11 +32,26 @@ const FormikApp = withFormik({
       email: email || "test text",
       password: password || "",
       newsletter: newsletter || false,
-      plan: plan || 'free'
+      plan: plan || "free"
     };
   },
-  handleSubmit(value) {
-    console.log(value);
+  validationSchema: Yup.object().shape({
+    email: Yup.string()
+      .email("Email not valid")
+      .required("Email is required"),
+    password: Yup.string()
+      .min(9, "Password must be 9 characters or longer")
+      .required("Password is required")
+  }),
+  handleSubmit(value, { resetForm, setErrors, setSubmitting }) {
+    setTimeout(() => {
+      if (value.email === "kevin@gmail.com") {
+        setErrors({ email: "That email is already taken" });
+      } else {
+        resetForm();
+      }
+      setSubmitting(false);
+    }, 2000);
   }
 })(App);
 
